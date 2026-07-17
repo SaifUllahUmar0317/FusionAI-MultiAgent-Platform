@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+*.local
+Groq_API.txt
+Tavily API.txt

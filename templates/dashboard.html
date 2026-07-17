@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionAI Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * { 
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --border-color: #e2e8f0;
+            --blue-primary: #6366f1;
+            --blue-secondary: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        body { 
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--blue-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: var(--blue-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+        
+        td {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        tr:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-info { background: rgba(99, 102, 241, 0.1); color: var(--blue-primary); }
+        
+        .star-rating {
+            color: #fbbf24;
+        }
+        
+        .sidebar {
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+        }
+        
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 4px 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: var(--blue-primary);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 32px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6 border-b" style="border-color: var(--border-color);">
+            <h1 class="text-xl font-bold" style="color: var(--blue-primary);">FusionAI Admin</h1>
+            <p class="text-xs mt-1" style="color: var(--text-tertiary);">Dashboard & Analytics</p>
+        </div>
+        
+        <nav class="py-4">
+            <div class="nav-item active" onclick="showSection('overview')">
+                <i class="fas fa-chart-line mr-3"></i>Overview
+            </div>
+            <div class="nav-item" onclick="showSection('feedback')">
+                <i class="fas fa-comment-dots mr-3"></i>Feedback
+            </div>
+            <div class="nav-item" onclick="showSection('conversations')">
+                <i class="fas fa-comments mr-3"></i>Conversations
+            </div>
+            <div class="nav-item" onclick="showSection('analytics')">
+                <i class="fas fa-chart-bar mr-3"></i>Analytics
+            </div>
+            <div class="nav-item" onclick="showSection('users')">
+                <i class="fas fa-users mr-3"></i>Users
+            </div>
+            <div class="nav-item" onclick="showSection('export')">
+                <i class="fas fa-download mr-3"></i>Export Data
+            </div>
+        </nav>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-6 border-t" style="border-color: var(--border-color);">
+            <button onclick="refreshData()" class="btn-secondary w-full">
+                <i class="fas fa-sync-alt mr-2"></i>Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Overview Section -->
+        <div id="overview-section" class="section">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Dashboard Overview</h2>
+                    <p class="text-sm mt-1" style="color: var(--text-secondary);">Real-time system metrics and performance</p>
+                </div>
+                <div class="text-sm" style="color: var(--text-tertiary);">
+                    Last updated: <span id="last-updated">--</span>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm opacity-90 mb-1">Total Queries</p>
+                            <h3 class="text-3xl font-bold" id="total-queries">0</h3>
+                        </div>
+                        <i class="fas fa-comments text-4xl opacity-20"></i>
+                    </div>
+                </div>
+                
+                <div class="card" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm opacity-90 mb-1">Active Users</p>
+                            <h3 class="text-3xl font-bold" id="active-users">0</h3>
+                        </div>
+                        <i class="fas fa-users text-4xl opacity-20"></i>
+                    </div>
+                </div>
+                
+                <div class="card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm opacity-90 mb-1">Avg Rating</p>
+                            <h3 class="text-3xl font-bold" id="avg-rating">0.0</h3>
+                        </div>
+                        <i class="fas fa-star text-4xl opacity-20"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card">
+                    <h3 class="text-lg font-bold mb-4">Agent Usage Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="agentChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="text-lg font-bold mb-4">Daily Query Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Section -->
+        <div id="feedback-section" class="section hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">User Feedback</h2>
+                    <p class="text-sm mt-1" style="color: var(--text-secondary);">Customer reviews and suggestions</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportData('feedback', 'csv')" class="btn-secondary export-btn">
+                        <i class="fas fa-file-csv"></i>Export CSV
+                    </button>
+                    <button onclick="exportData('feedback', 'json')" class="btn-primary export-btn">
+                        <i class="fas fa-file-code"></i>Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table id="feedback-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Category</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedback-tbody">
+                            <tr>
+                                <td colspan="6" class="text-center" style="color: var(--text-tertiary);">Loading feedback...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversations Section -->
+        <div id="conversations-section" class="section hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Conversation History</h2>
+                    <p class="text-sm mt-1" style="color: var(--text-secondary);">All user interactions with AI agents</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportData('conversations', 'csv')" class="btn-secondary export-btn">
+                        <i class="fas fa-file-csv"></i>Export CSV
+                    </button>
+                    <button onclick="exportData('conversations', 'json')" class="btn-primary export-btn">
+                        <i class="fas fa-file-code"></i>Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table id="conversations-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Agent</th>
+                                <th>User Message</th>
+                                <th>AI Response</th>
+                            </tr>
+                        </thead>
+                        <tbody id="conversations-tbody">
+                            <tr>
+                                <td colspan="4" class="text-center" style="color: var(--text-tertiary);">Loading conversations...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics-section" class="section hidden">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold">Advanced Analytics</h2>
+                <p class="text-sm mt-1" style="color: var(--text-secondary);">Detailed performance metrics and insights</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card">
+                    <h4 class="text-sm font-bold mb-2" style="color: var(--text-secondary);">Most Popular Agent</h4>
+                    <p class="text-2xl font-bold" id="popular-agent">--</p>
+                    <p class="text-sm mt-1" style="color: var(--text-tertiary);"><span id="popular-count">0</span> queries</p>
+                </div>
+                
+                <div class="card">
+                    <h4 class="text-sm font-bold mb-2" style="color: var(--text-secondary);">Today's Queries</h4>
+                    <p class="text-2xl font-bold" id="today-queries">0</p>
+                    <p class="text-sm mt-1" style="color: var(--text-tertiary);">Active conversations</p>
+                </div>
+                
+                <div class="card">
+                    <h4 class="text-sm font-bold mb-2" style="color: var(--text-secondary);">Total Agents</h4>
+                    <p class="text-2xl font-bold" id="total-agents">0</p>
+                    <p class="text-sm mt-1" style="color: var(--text-tertiary);">Available services</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-lg font-bold mb-4">Agent Performance Breakdown</h3>
+                <div id="agent-breakdown"></div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users-section" class="section hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">User Management</h2>
+                    <p class="text-sm mt-1" style="color: var(--text-secondary);">Registered users and activity</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportData('users', 'csv')" class="btn-secondary export-btn">
+                        <i class="fas fa-file-csv"></i>Export CSV
+                    </button>
+                    <button onclick="exportData('users', 'json')" class="btn-primary export-btn">
+                        <i class="fas fa-file-code"></i>Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Total Queries</th>
+                                <th>Last Active</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr>
+                                <td colspan="6" class="text-center" style="color: var(--text-tertiary);">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div id="export-section" class="section hidden">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold">Data Export Center</h2>
+                <p class="text-sm mt-1" style="color: var(--text-secondary);">Download complete datasets for integration</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-lg font-bold mb-4">Export All Data</h3>
+                    <p class="text-sm mb-6" style="color: var(--text-secondary);">Download complete database backup</p>
+                    <div class="flex gap-3">
+                        <button onclick="exportAllData('csv')" class="btn-secondary flex-1">
+                            <i class="fas fa-file-csv mr-2"></i>CSV Format
+                        </button>
+                        <button onclick="exportAllData('json')" class="btn-primary flex-1">
+                            <i class="fas fa-file-code mr-2"></i>JSON Format
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-lg font-bold mb-4">Integration Parameters</h3>
+                    <p class="text-sm mb-4" style="color: var(--text-secondary);">API endpoints for real-time integration</p>
+                    <div class="bg-gray-100 p-4 rounded-lg text-xs font-mono">
+                        <div class="mb-2"><strong>Base URL:</strong> http://127.0.0.1:5000</div>
+                        <div class="mb-2"><strong>Feedback:</strong> GET /feedback/all</div>
+                        <div class="mb-2"><strong>Conversations:</strong> GET /history/all</div>
+                        <div class="mb-2"><strong>Tasks:</strong> GET /tasks</div>
+                        <div class="mb-2"><strong>Analytics:</strong> GET /analytics</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let agentChart, trendChart;
+        let allData = {
+            feedback: [],
+            conversations: [],
+            users: [],
+            analytics: {}
+        };
+
+        // Initialize dashboard
+        async function initDashboard() {
+            await refreshData();
+            updateTimestamp();
+            setInterval(updateTimestamp, 1000);
+        }
+
+        // Refresh all data
+        async function refreshData() {
+            try {
+                await Promise.all([
+                    loadFeedback(),
+                    loadConversations(),
+                    loadUsers(),
+                    loadAnalytics()
+                ]);
+                updateOverview();
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+            }
+        }
+
+        // Load feedback data
+        async function loadFeedback() {
+            const response = await fetch('/feedback/all');
+            const data = await response.json();
+            allData.feedback = data.feedbacks || [];
+            renderFeedbackTable();
+        }
+
+        // Load conversations
+        async function loadConversations() {
+            const response = await fetch('/history/all');
+            const data = await response.json();
+            allData.conversations = data.conversations || [];
+            renderConversationsTable();
+        }
+
+        // Load users
+        async function loadUsers() {
+            const response = await fetch('/database/users.json');
+            allData.users = await response.json();
+            renderUsersTable();
+        }
+
+        // Load analytics
+        async function loadAnalytics() {
+            const response = await fetch('/analytics/summary');
+            allData.analytics = await response.json();
+            renderAnalytics();
+        }
+
+        // Update overview section
+        function updateOverview() {
+            document.getElementById('total-queries').textContent = allData.analytics.total_queries || 0;
+            document.getElementById('active-users').textContent = allData.users.length || 0;
+            
+            const avgRating = calculateAverageRating();
+            document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
+            
+            renderCharts();
+        }
+
+        // Calculate average rating
+        function calculateAverageRating() {
+            if (allData.feedback.length === 0) return 0;
+            const sum = allData.feedback.reduce((acc, f) => acc + (f.rating || 0), 0);
+            return sum / allData.feedback.length;
+        }
+
+        // Render feedback table
+        function renderFeedbackTable() {
+            const tbody = document.getElementById('feedback-tbody');
+            if (allData.feedback.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color: var(--text-tertiary);">No feedback available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = allData.feedback.map(f => `
+                <tr>
+                    <td>${formatDate(f.timestamp)}</td>
+                    <td>${f.user_id.substring(0, 8)}...</td>
+                    <td><span class="star-rating">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</span></td>
+                    <td><span class="badge badge-info">${f.category}</span></td>
+                    <td>${truncate(f.message, 50)}</td>
+                    <td><span class="badge badge-${getStatusColor(f.status)}">${f.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Render conversations table
+        function renderConversationsTable() {
+            const tbody = document.getElementById('conversations-tbody');
+            if (allData.conversations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color: var(--text-tertiary);">No conversations available</td></tr>';
+                return;
+            }
+
+            // Short agent display names (keep them compact)
+            const agentNames = {
+                'single': 'Standard',
+                'multibot': 'Multi Bot',
+                'websearch': 'Web Search',
+                'email': 'Email',
+                'code': 'Code',
+                'reddit': 'Reddit',
+                'youtube': 'YouTube',
+                'research': 'Research',
+                'word': 'Word',
+                'excel': 'Excel',
+                'powerpoint': 'PPT',
+                'pdf': 'PDF',
+                'gpt': 'GPT-4',
+                'claude': 'Claude',
+                'gemini': 'Gemini',
+                'image': 'Vision',
+                'translator': 'Translate'
+            };
+
+            tbody.innerHTML = allData.conversations.map(c => {
+                const agentDisplay = agentNames[c.agent] || c.agent;
+                
+                // Format timestamp to be shorter
+                const date = new Date(c.timestamp);
+                const formattedDate = date.toLocaleString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+                
+                return `
+                <tr class="text-sm">
+                    <td class="whitespace-nowrap px-4 py-3">${formattedDate}</td>
+                    <td class="whitespace-nowrap px-4 py-3"><span class="badge badge-info text-xs">${agentDisplay}</span></td>
+                    <td class="px-4 py-3 max-w-[200px]">
+                        <div class="truncate" title="${c.user_message || ''}">${truncate(c.user_message, 35) || '--'}</div>
+                    </td>
+                    <td class="px-4 py-3 max-w-[250px]">
+                        <div class="truncate" title="${c.ai_response || ''}">${truncate(c.ai_response, 45) || '--'}</div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // Render users table
+        function renderUsersTable() {
+            const tbody = document.getElementById('users-tbody');
+            if (allData.users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color: var(--text-tertiary);">No users available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = allData.users.map(u => `
+                <tr>
+                    <td>${u.username}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge badge-${u.role === 'admin' ? 'danger' : 'info'}">${u.role}</span></td>
+                    <td>${u.total_queries || 0}</td>
+                    <td>${formatDate(u.last_active)}</td>
+                    <td>${formatDate(u.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render analytics
+        function renderAnalytics() {
+            const analytics = allData.analytics;
+            
+            // Agent display name mapping
+            const agentNames = {
+                'single': 'Standard Chat',
+                'multibot': 'Multi-Bot Search',
+                'websearch': 'Web Search Pro',
+                'email': 'Email Pro',
+                'code': 'Code Wizard',
+                'reddit': 'Reddit Explorer',
+                'youtube': 'YouTube Analyzer',
+                'research': 'Research Assistant',
+                'word': 'Word Generator',
+                'excel': 'Excel Pro',
+                'powerpoint': 'Presentation Designer',
+                'pdf': 'PDF Master',
+                'gpt': 'GPT-4 Turbo',
+                'claude': 'Claude Sonnet',
+                'gemini': 'Gemini Ultra',
+                'image': 'Vision AI',
+                'translator': 'Universal Translator'
+            };
+            
+            // Get most popular agent with display name
+            const popularAgentCode = analytics.most_popular_agent?.name || '--';
+            const popularAgentDisplay = agentNames[popularAgentCode] || popularAgentCode;
+            
+            document.getElementById('popular-agent').textContent = popularAgentDisplay;
+            document.getElementById('popular-count').textContent = analytics.most_popular_agent?.count || 0;
+            document.getElementById('today-queries').textContent = analytics.today_queries || 0;
+            document.getElementById('total-agents').textContent = analytics.total_agents || 0;
+
+            // Render agent breakdown
+            const breakdown = document.getElementById('agent-breakdown');
+            const agentUsage = analytics.agent_usage || {};
+            
+            if (Object.keys(agentUsage).length === 0) {
+                breakdown.innerHTML = '<p class="text-center" style="color: var(--text-tertiary);">No agent data available</p>';
+                return;
+            }
+            
+            breakdown.innerHTML = Object.entries(agentUsage)
+                .sort((a, b) => b[1] - a[1])
+                .map(([agent, count]) => {
+                    const displayName = agentNames[agent] || agent;
+                    const percentage = (count / analytics.total_queries * 100).toFixed(1);
+                    return `
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">${displayName}</span>
+                                <span style="color: var(--text-secondary);">${count} queries (${percentage}%)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // Render charts
+        function renderCharts() {
+            const agentUsage = allData.analytics.agent_usage || {};
+            
+            // Agent display name mapping
+            const agentNames = {
+                'single': 'Standard Chat',
+                'multibot': 'Multi-Bot Search',
+                'websearch': 'Web Search Pro',
+                'email': 'Email Pro',
+                'code': 'Code Wizard',
+                'reddit': 'Reddit Explorer',
+                'youtube': 'YouTube Analyzer',
+                'research': 'Research Assistant',
+                'word': 'Word Generator',
+                'excel': 'Excel Pro',
+                'powerpoint': 'Presentation Designer',
+                'pdf': 'PDF Master',
+                'gpt': 'GPT-4 Turbo',
+                'claude': 'Claude Sonnet',
+                'gemini': 'Gemini Ultra',
+                'image': 'Vision AI',
+                'translator': 'Universal Translator'
+            };
+            
+            // Convert agent codes to display names for the chart
+            const chartLabels = Object.keys(agentUsage).map(agent => agentNames[agent] || agent);
+            const chartData = Object.values(agentUsage);
+            
+            // Agent usage pie chart
+            if (agentChart) agentChart.destroy();
+            const agentCtx = document.getElementById('agentChart').getContext('2d');
+            agentChart = new Chart(agentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        data: chartData,
+                        backgroundColor: [
+                            '#6366f1', '#8b5cf6', '#ec4899', '#f59e0b',
+                            '#10b981', '#3b82f6', '#ef4444', '#14b8a6'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Daily trend line chart
+            if (trendChart) trendChart.destroy();
+            const dailyStats = allData.analytics.daily_stats || [];
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: dailyStats.map(d => d.date),
+                    datasets: [{
+                        label: 'Queries',
+                        data: dailyStats.map(d => d.queries),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Export data functions
+        function exportData(type, format) {
+            const data = allData[type];
+            if (format === 'csv') {
+                downloadCSV(data, `${type}_export.csv`);
+            } else {
+                downloadJSON(data, `${type}_export.json`);
+            }
+        }
+
+        function exportAllData(format) {
+            if (format === 'csv') {
+                Object.keys(allData).forEach(key => {
+                    if (Array.isArray(allData[key])) {
+                        downloadCSV(allData[key], `${key}_export.csv`);
+                    }
+                });
+            } else {
+                downloadJSON(allData, 'complete_export.json');
+            }
+        }
+
+        function downloadCSV(data, filename) {
+            if (!data || data.length === 0) return;
+            
+            const headers = Object.keys(data[0]);
+            const csv = [
+                headers.join(','),
+                ...data.map(row => headers.map(h => JSON.stringify(row[h] || '')).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+
+        function downloadJSON(data, filename) {
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+
+        // Navigation
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`${section}-section`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        // Utility functions
+        function formatDate(dateStr) {
+            if (!dateStr) return '--';
+            const date = new Date(dateStr);
+            return date.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        function truncate(str, length) {
+            if (!str) return '--';
+            // Remove any HTML entities or extra spaces
+            const cleanStr = String(str).replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
+            return cleanStr.length > length ? cleanStr.substring(0, length) + '…' : cleanStr;
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'new': 'info',
+                'pending': 'warning',
+                'completed': 'success',
+                'resolved': 'success',
+                'reviewed': 'info'
+            };
+            return colors[status] || 'info';
+        }
+
+        function getPriorityColor(priority) {
+            const colors = {
+                'high': 'danger',
+                'medium': 'warning',
+                'low': 'info'
+            };
+            return colors[priority] || 'info';
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initDashboard);
+    </script>
+</body>
+</html>

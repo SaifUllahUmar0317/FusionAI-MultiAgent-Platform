@@ -1,0 +1,13 @@
+fastapi
+flask
+flask-cors
+uvicorn
+pydantic
+requests
+python-docx
+matplotlib
+beautifulsoup4
+markdown
+speechrecognition
+groq
+tavily

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionAI | Help Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --border-color: #e2e8f0;
+            --blue-primary: #6366f1;
+            --blue-secondary: #4f46e5;
+            --blue-light: #eef2ff;
+            --purple-primary: #a855f7;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #64748b;
+            --border-color: #334155;
+            --blue-light: rgba(99, 102, 241, 0.1);
+        }
+        
+        body { 
+            background: var(--bg-primary);
+            color: var(--text-primary); 
+        }
+
+        .help-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--blue-primary), var(--purple-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .help-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .help-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--blue-primary);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .faq-question i {
+            color: var(--blue-primary);
+            font-size: 1.25rem;
+        }
+
+        .faq-answer {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-left: 2.25rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--blue-primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--blue-primary), var(--purple-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-secondary) 100%);
+            box-shadow: var(--shadow-md);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--blue-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 4px;
+            display: inline-flex;
+        }
+        
+        .theme-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn.active {
+            background: var(--blue-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .contact-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .contact-chip:hover {
+            border-color: var(--blue-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--blue-primary);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="border-b" style="background: var(--bg-primary); border-color: var(--border-color);">
+        <div class="help-container flex items-center justify-between py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-rocket text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">FusionAI</h1>
+                    <p class="text-xs" style="color: var(--text-secondary);">Help Center</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle -->
+                <div class="theme-toggle flex gap-1">
+                    <div class="theme-btn active" id="light-btn" onclick="setTheme('light')">
+                        <i class="fas fa-sun mr-1"></i> Light
+                    </div>
+                    <div class="theme-btn" id="dark-btn" onclick="setTheme('dark')">
+                        <i class="fas fa-moon mr-1"></i> Dark
+                    </div>
+                </div>
+                <button onclick="window.location.href='/'" 
+                    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                    title="Back to Chat">
+                    <i class="fas fa-arrow-left text-lg" style="color: var(--text-tertiary);"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="help-container">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black mb-4 gradient-text">How can we help?</h1>
+            <p class="text-xl" style="color: var(--text-secondary);">
+                Everything you need to know about FusionAI
+            </p>
+        </div>
+
+        <!-- Quick Features -->
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">16+ AI Agents</h3>
+                <p class="text-sm" style="color: var(--text-secondary);">Specialized agents for every task</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">App Integration</h3>
+                <p class="text-sm" style="color: var(--text-secondary);">Connect with your favorite tools</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Custom Training</h3>
+                <p class="text-sm" style="color: var(--text-secondary);">Train AI on your own data</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="help-card">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-question-circle" style="color: var(--blue-primary);"></i>
+                Frequently Asked Questions
+            </h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    What is FusionAI?
+                </div>
+                <div class="faq-answer">
+                    FusionAI is a professional multi-agent platform that combines multiple AI models (GPT-4, Claude, Gemini) with specialized tools for web search, document creation, social media analysis, and more. It's designed to be your all-in-one AI workspace.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    How do I use different AI agents?
+                </div>
+                <div class="faq-answer">
+                    Click the "Multi-Bot Search" button in the top-left corner of the chat interface. This opens the agent drawer where you can select from 16+ specialized agents including Multi-Bot Search, Custom Trainer, Web Search, Reddit Explorer, and more.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    Can I upload files for analysis?
+                </div>
+                <div class="faq-answer">
+                    Yes! Click the paperclip icon next to the input field to upload images, PDFs, Word documents, Excel files, text files, and more. The AI will analyze the content and provide insights based on your instructions.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    How does voice input work?
+                </div>
+                <div class="faq-answer">
+                    Click the microphone button next to the input field to start voice recording. Speak naturally, and the system will automatically convert your speech to text. It will stop after a pause and send the message automatically.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    What are Connected Apps?
+                </div>
+                <div class="faq-answer">
+                    Connected Apps allow FusionAI to integrate with external tools like Figma, Canva, Notion, and n8n. You can manage these connections in Settings. Connected apps show a green dot and can be used directly from the chat interface.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    Is my data private and secure?
+                </div>
+                <div class="faq-answer">
+                    Absolutely! All conversations are encrypted and private. You're currently in guest mode, but you can create an account to save your history across devices. We never share your data with third parties.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-angle-right"></i>
+                    How do I change the theme?
+                </div>
+                <div class="faq-answer">
+                    Use the theme toggle buttons (Light/Dark) in the top-right corner of any page. Your preference is saved locally and will persist across sessions.
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="help-card text-center">
+            <h2 class="text-2xl font-bold mb-4">Still need help?</h2>
+            <p class="mb-6" style="color: var(--text-secondary);">
+                Can't find what you're looking for? Our support team is here to help.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="mailto:support@fusionai.com" class="contact-chip">
+                    <i class="fas fa-envelope" style="color: var(--blue-primary);"></i>
+                    support@fusionai.com
+                </a>
+                <a href="#" class="contact-chip">
+                    <i class="fab fa-discord" style="color: var(--blue-primary);"></i>
+                    Discord Community
+                </a>
+                <a href="#" class="contact-chip">
+                    <i class="fab fa-twitter" style="color: var(--blue-primary);"></i>
+                    @FusionAI
+                </a>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4 justify-center mt-8">
+            <button onclick="window.location.href='/'" class="btn-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Chat
+            </button>
+            <button onclick="window.location.href='/settings'" class="btn-primary">
+                <i class="fas fa-cog mr-2"></i>Go to Settings
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-sm mt-8" style="color: var(--text-tertiary);">
+            <i class="fas fa-shield-alt mr-1"></i>
+            FusionAI v1.0 - Your privacy is our priority
+        </p>
+    </div>
+
+    <script>
+        // Theme management
+        function setTheme(theme) {
+            const html = document.documentElement;
+            
+            // Update theme buttons
+            const lightBtns = document.querySelectorAll('#light-btn');
+            const darkBtns = document.querySelectorAll('#dark-btn');
+            
+            if (theme === 'dark') {
+                html.classList.add('dark-mode');
+                lightBtns.forEach(btn => btn.classList.remove('active'));
+                darkBtns.forEach(btn => btn.classList.add('active'));
+            } else {
+                html.classList.remove('dark-mode');
+                lightBtns.forEach(btn => btn.classList.add('active'));
+                darkBtns.forEach(btn => btn.classList.remove('active'));
+            }
+            
+            // Save preference
+            localStorage.setItem('theme', theme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        // FAQ accordion effect (optional)
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+                icon.style.transform = answer.style.display === 'none' ? 'rotate(0deg)' : 'rotate(90deg)';
+            });
+        });
+    </script>
+</body>
+</html>

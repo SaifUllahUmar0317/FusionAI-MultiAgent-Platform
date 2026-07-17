@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionAI | Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --border-color: #e2e8f0;
+            --blue-primary: #6366f1;
+            --blue-secondary: #4f46e5;
+            --blue-light: #eef2ff;
+            --purple-primary: #a855f7;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #64748b;
+            --border-color: #334155;
+            --blue-light: rgba(99, 102, 241, 0.1);
+        }
+        
+        body { 
+            background: var(--bg-primary);
+            color: var(--text-primary); 
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .settings-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--blue-primary), var(--purple-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .settings-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .settings-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--blue-primary);
+            transform: translateY(-2px);
+        }
+
+        .settings-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .settings-section-title i {
+            color: var(--blue-primary);
+            font-size: 1.25rem;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .settings-item-label i {
+            width: 24px;
+            color: var(--text-tertiary);
+            font-size: 1.1rem;
+        }
+
+        .settings-item-label span {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .settings-item-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--blue-primary), var(--purple-primary));
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .select-input {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.2rem;
+        }
+
+        .select-input:focus {
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 4px var(--blue-light);
+        }
+
+        .danger-zone {
+            border: 2px solid #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-secondary) 100%);
+            box-shadow: var(--shadow-md);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--blue-primary);
+            transform: translateY(-2px);
+        }
+
+        .action-button {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--blue-primary);
+        }
+
+        .badge {
+            background: var(--blue-light);
+            color: var(--blue-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--blue-primary), var(--purple-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .api-key-input {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 0.875rem;
+            font-family: monospace;
+        }
+
+        .api-key-input:focus {
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 4px var(--blue-light);
+            outline: none;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 4px;
+            display: inline-flex;
+        }
+        
+        .theme-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn.active {
+            background: var(--blue-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--blue-primary);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="border-b" style="background: var(--bg-primary); border-color: var(--border-color);">
+        <div class="settings-container flex items-center justify-between py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-rocket text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">FusionAI</h1>
+                    <p class="text-xs" style="color: var(--text-secondary);">Settings</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle -->
+                <div class="theme-toggle flex gap-1">
+                    <div class="theme-btn active" id="light-btn" onclick="setTheme('light')">
+                        <i class="fas fa-sun mr-1"></i> Light
+                    </div>
+                    <div class="theme-btn" id="dark-btn" onclick="setTheme('dark')">
+                        <i class="fas fa-moon mr-1"></i> Dark
+                    </div>
+                </div>
+                <button onclick="window.location.href='/'"  
+                    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                    title="Back to Chat">
+                    <i class="fas fa-arrow-left text-lg" style="color: var(--text-tertiary);"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <!-- Profile Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile Information</span>
+                <span class="badge">Guest Mode</span>
+            </div>
+            
+            <div class="flex items-start gap-6">
+                <div class="avatar-large">
+                    G
+                </div>
+                <div class="flex-grow">
+                    <div class="settings-item">
+                        <div>
+                            <div class="font-semibold text-lg">Guest User</div>
+                            <p style="color: var(--text-secondary);" class="text-sm">You're currently in guest mode</p>
+                        </div>
+                        <button class="action-button">
+                            <i class="fas fa-pen mr-2"></i>Edit Profile
+                        </button>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-item-label">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <span>Email Address</span>
+                                <p class="settings-item-description">guest@fusionai.com (temporary)</p>
+                            </div>
+                        </div>
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt mr-2"></i>Verify
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-palette"></i>
+                <span>Appearance</span>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-desktop"></i>
+                    <div>
+                        <span>Theme</span>
+                        <p class="settings-item-description">Choose between light and dark mode</p>
+                    </div>
+                </div>
+                <div class="theme-toggle flex gap-1">
+                    <div class="theme-btn active" id="settings-light-btn" onclick="setTheme('light')">
+                        <i class="fas fa-sun mr-1"></i> Light
+                    </div>
+                    <div class="theme-btn" id="settings-dark-btn" onclick="setTheme('dark')">
+                        <i class="fas fa-moon mr-1"></i> Dark
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-font"></i>
+                    <div>
+                        <span>Font Size</span>
+                        <p class="settings-item-description">Adjust text size for better readability</p>
+                    </div>
+                </div>
+                <select class="select-input">
+                    <option>Small</option>
+                    <option selected>Medium</option>
+                    <option>Large</option>
+                    <option>Extra Large</option>
+                </select>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-comment-dots"></i>
+                    <div>
+                        <span>Message Density</span>
+                        <p class="settings-item-description">Comfortable or compact view</p>
+                    </div>
+                </div>
+                <select class="select-input">
+                    <option selected>Comfortable</option>
+                    <option>Compact</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- AI Models & API Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-brain"></i>
+                <span>AI Models & API</span>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <span>Default AI Model</span>
+                        <p class="settings-item-description">Choose your preferred AI model</p>
+                    </div>
+                </div>
+                <select class="select-input">
+                    <option selected>GPT-4 Turbo</option>
+                    <option>Claude Sonnet</option>
+                    <option>Gemini Ultra</option>
+                    <option>Multi-Bot Search (All)</option>
+                </select>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-key"></i>
+                    <div>
+                        <span>API Keys</span>
+                        <p class="settings-item-description">Configure your API keys for services</p>
+                    </div>
+                </div>
+                <button class="action-button" onclick="alert('API configuration coming soon!')">
+                    <i class="fas fa-plus mr-2"></i>Add Key
+                </button>
+            </div>
+
+            <div class="mt-4">
+                <label class="text-sm font-medium" style="color: var(--text-secondary);">OpenAI API Key</label>
+                <div class="flex gap-2 mt-2">
+                    <input type="password" class="api-key-input" value="sk-••••••••••••••••••••••••" readonly>
+                    <button class="action-button">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connected Apps Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-plug"></i>
+                <span>Connected Apps</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background: var(--bg-secondary);">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-pencil-ruler text-white"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-sm">Figma</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">Connected</p>
+                    </div>
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                </div>
+
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background: var(--bg-secondary);">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+                        <i class="fas fa-palette text-white"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-sm">Canva</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">Connected</p>
+                    </div>
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                </div>
+
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background: var(--bg-secondary);">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <i class="fab fa-notion text-white"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-sm">Notion</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">Connected</p>
+                    </div>
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                </div>
+
+                <div class="flex items-center gap-3 p-3 rounded-xl opacity-50" style="background: var(--bg-secondary);">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                        <i class="fab fa-github text-white"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-sm">GitHub</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">Disconnected</p>
+                    </div>
+                    <button class="text-xs text-blue-500">Connect</button>
+                </div>
+            </div>
+            
+            <button class="btn-primary w-full mt-4 py-3">
+                <i class="fas fa-plus-circle mr-2"></i>Connect New App
+            </button>
+        </div>
+
+        <!-- Privacy & Data Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-shield-alt"></i>
+                <span>Privacy & Data</span>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-history"></i>
+                    <div>
+                        <span>Chat History</span>
+                        <p class="settings-item-description">Save your conversation history</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <span>Usage Analytics</span>
+                        <p class="settings-item-description">Help improve FusionAI by sharing usage data</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-download"></i>
+                    <div>
+                        <span>Export Data</span>
+                        <p class="settings-item-description">Download all your conversations and data</p>
+                    </div>
+                </div>
+                <button class="action-button">
+                    <i class="fas fa-file-export mr-2"></i>Export
+                </button>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-trash-alt"></i>
+                    <div>
+                        <span>Clear History</span>
+                        <p class="settings-item-description">Delete all conversation history</p>
+                    </div>
+                </div>
+                <button class="action-button text-red-500 hover:text-red-600" onclick="alert('This would clear your history')">
+                    <i class="fas fa-trash mr-2"></i>Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="settings-card">
+            <div class="settings-section-title">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <div>
+                        <span>Email Notifications</span>
+                        <p class="settings-item-description">Receive updates and insights via email</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-comment"></i>
+                    <div>
+                        <span>Message Sounds</span>
+                        <p class="settings-item-description">Play sound for new messages</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-card danger-zone">
+            <div class="settings-section-title">
+                <i class="fas fa-exclamation-triangle text-red-500"></i>
+                <span class="text-red-500">Danger Zone</span>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-item-label">
+                    <i class="fas fa-user-slash text-red-500"></i>
+                    <div>
+                        <span>Delete Account</span>
+                        <p class="settings-item-description">Permanently delete your account and all data</p>
+                    </div>
+                </div>
+                <button class="action-button text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" onclick="alert('Account deletion would happen here')">
+                    Delete Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4 justify-end mt-8">
+            <button onclick="window.location.href='/'" class="btn-secondary">
+                Cancel
+            </button>
+            <button onclick="alert('Settings saved successfully!')" class="btn-primary">
+                <i class="fas fa-save mr-2"></i>Save Changes
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-sm mt-8" style="color: var(--text-tertiary);">
+            <i class="fas fa-shield-alt mr-1"></i>
+            FusionAI v1.0 - Your data is encrypted and secure
+        </p>
+    </div>
+
+    <script>
+        // Theme management
+        function setTheme(theme) {
+            const html = document.documentElement;
+            
+            // Update main theme buttons
+            const lightBtns = document.querySelectorAll('#light-btn, #settings-light-btn');
+            const darkBtns = document.querySelectorAll('#dark-btn, #settings-dark-btn');
+            
+            if (theme === 'dark') {
+                html.classList.add('dark-mode');
+                lightBtns.forEach(btn => btn.classList.remove('active'));
+                darkBtns.forEach(btn => btn.classList.add('active'));
+            } else {
+                html.classList.remove('dark-mode');
+                lightBtns.forEach(btn => btn.classList.add('active'));
+                darkBtns.forEach(btn => btn.classList.remove('active'));
+            }
+            
+            // Save preference
+            localStorage.setItem('theme', theme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        // Interactive hover effects for cards
+        document.querySelectorAll('.settings-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'all 0.3s ease';
+            });
+        });
+
+        // API key visibility toggle
+        document.querySelectorAll('.api-key-input').forEach(input => {
+            const toggleBtn = input.nextElementSibling;
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                    } else {
+                        input.type = 'password';
+                        toggleBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                    }
+                });
+            }
+        });
+
+        // Simulate loading state for save button
+        document.querySelector('.btn-primary').addEventListener('click', function(e) {
+            if (e.target.closest('.btn-primary')) {
+                const btn = e.target.closest('.btn-primary');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 1000);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Settings page loaded');
+        });
+    </script>
+</body>
+</html>
