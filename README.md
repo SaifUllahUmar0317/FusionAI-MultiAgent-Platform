@@ -192,6 +192,11 @@ Update the Markdown image paths if you use different file names.
 
 ---
 
-## License
+## Team
 
-Add your preferred license information here.
+- Saifullah Umar (Backend and API integration)
+- Izza Mustafa Jadoon (Frontend designer and developer)
+- Bilal Rao (Debugging)
+- Ahmad Rao (Figma designer)
+
+---
