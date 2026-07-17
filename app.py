@@ -21,9 +21,9 @@ CORS(app, origins=["http://localhost:5000", "http://127.0.0.1:5000", "http://loc
 # ===============================
 # GitHub OAuth Configuration
 # ===============================
-GITHUB_CLIENT_ID = "Ov23liNfWCMQjLau8N0h"
-GITHUB_CLIENT_SECRET = "4fdae8657c4782d674baf273f5949f88352bcb16"
-GITHUB_REDIRECT_URI = "http://localhost:5000/github/callback"
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "")
+GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "http://localhost:5000/github/callback")
 
 # ===============================
 # Word Generator Configuration

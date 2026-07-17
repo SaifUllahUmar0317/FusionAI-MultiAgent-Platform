@@ -101,11 +101,14 @@ The app provides a clean web UI with these routes:
 python -m pip install -r requirements.txt
 ```
 
-2. Set the Groq and Tavily API keys in your environment:
+2. Set the required environment variables in your shell:
 
 ```bash
 set GROQ_API_KEY=your_groq_api_key
 set TAVILY_API_KEY=your_tavily_api_key
+set GITHUB_CLIENT_ID=your_github_oauth_client_id
+set GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+set GITHUB_REDIRECT_URI=http://localhost:5000/github/callback
 ```
 
 3. Start the services:
@@ -126,7 +129,7 @@ set TAVILY_API_KEY=your_tavily_api_key
 
 - `email_config.json` stores Gmail email, app password, and phone settings.
 - `WORD_GENERATOR_URL` in `app.py` should point to the FastAPI word-generation service.
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and redirect URL are declared in `app.py`.
+- GitHub OAuth values are read from environment variables in `app.py`.
 
 > Important: Do not commit actual credentials to source control.
 
